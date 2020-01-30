@@ -107,16 +107,18 @@ The cycle period is 200 ms.
 
 # 3. Implementation
 The code you need to develop is at `./app`.
+
 The status flow is as follows:
+
 `__init__` -> `initialization` -> `fixed_update` -> `update` -> `late_update` -> `destroy`
 
-`__init__` is called a once when the class generated.
-`initialization` can be called any number of times.
-`fixed_update` handles message receive processing.
-`update` handles main processing.
-`late_update` handles message transmit processing.
+ - `__init__` is called a once when the class generated.
+ - `initialization` can be called any number of times.
+ - `fixed_update` handles message receive processing.
+ - `update` handles main processing.
+ - `late_update` handles message transmit processing.
 
-## sample
+## 3.1. sample
 Here are the easiest ways to use the library:
 
 ```
