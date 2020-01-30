@@ -1,4 +1,4 @@
-# 0. introduction
+# 0. Introduction
 This repository consists of software library/sample code that simplifies smallsat development.
 
 Includes the following features:
