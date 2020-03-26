@@ -10,6 +10,7 @@ Includes the following features:
 Todo:
  - Serialize
  - Modularized
+ - UART
 
 # 1. Environment and Dependency
  - python 3.8.0
