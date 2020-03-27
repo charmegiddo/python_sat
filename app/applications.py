@@ -32,7 +32,7 @@ class C_TestAdeviceExternalApplication(P_BaseApplication):
       C_MessagePost.get_instance().add_message(mes)
 
     if self.local_count % 30 == 0:
-      mes = C_Message("Please reponse", 1, 1, 100)
+      mes = C_Message("Please response", 1, 1, 100)
       C_MessagePost.get_instance().add_message(mes)
 
 class C_TestBdeviceExternalApplication(P_BaseApplication):
@@ -54,7 +54,7 @@ class C_TestBdeviceExternalApplication(P_BaseApplication):
   def fixed_update(self):
     # confirm message
     self.subscribes.draw_messages()
-    if "response" in self.subscribes.get_latest_message_payload:
+    if "response" in self.subscribes.get_latest_message_payload() :
       mes = C_Message("Respond from B device", 1, 1, 101) # external
       C_MessagePost.get_instance().add_message(mes)
     self.subscribes.clear_messages() 

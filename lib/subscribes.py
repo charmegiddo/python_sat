@@ -12,7 +12,7 @@ class C_ExternalPort():
       self.baud_rate = _baud_rate
       self.time_out = _time_out
       self.session = None
-      self.recieve_temp_message = None
+      self.recieve_temp_message = b''
       return
 
 class C_ExternalPortLists():
@@ -129,25 +129,30 @@ class C_MessagePost():
 
     # External recieve
     def recieve_external_post(self):
-       sess = C_ExternalPortLists.get_instance().get_sessions()
-       for i in range(len(sess)):
-         recieve_message = sess[i].session.read_all()
-         if len(recieve_message) < 1:
-           continue
-         # during sending data?
-         if sess[i].recieve_temp_message == None: 
-           sess[i].recieve_temp_message = recieve_message
-         else:
-           sess[i].recieve_temp_message += recieve_message
-         # all data done
-         if self.end_charcter.encode('UTF-8') in sess[i].recieve_temp_message:
-           parse = sess[i].recieve_temp_message.strip(self.end_charcter.encode('UTF-8'))
-           parse = parse.strip(self.start_charcter.encode('UTF-8'))
-           msg = pickle.loads(parse)
-           self.internal_messages.append(msg) # save internal messages
-           sess[i].recieve_temp_message = None
-           print('INFO recieve external message: {}, {}'.format(sess[i].session, msg))
- 
+      sess = C_ExternalPortLists.get_instance().get_sessions()
+      for i in range(len(sess)):
+        recieve_message = sess[i].session.read_all()
+        if len(recieve_message) < 1:
+          continue
+
+        # during sending data?
+        sess[i].recieve_temp_message += recieve_message
+
+        recieve_message = sess[i].recieve_temp_message.split(self.start_charcter.encode('UTF-8'))
+        recieve_message = recieve_message[1:] # debri 
+
+        # during sending data? if <S>B... -> tmp = <S>B...
+        if self.end_charcter.encode('UTF-8') not in recieve_message[-1]:
+          sess[i].recieve_temp_message = self.start_charcter.encode('UTF-8') + recieve_message[-1]
+          recieve_message = recieve_message[:-1] # eliminate end data
+
+        for _message in recieve_message: 
+          parse = sess[i].recieve_temp_message.strip(self.end_charcter.encode('UTF-8'))
+          parse = parse.strip(self.start_charcter.encode('UTF-8'))
+          msg = pickle.loads(parse)
+          self.internal_messages.append(msg) # save internal messages
+          print('INFO recieve external message: {}, {}'.format(sess[i].session, msg))
+          
     def clear_external_messages(self):
       self.external_messages = []
 
@@ -180,7 +185,7 @@ class C_Subscribes():
     def get_latest_message_payload(self):
       if len(self.messages) != 0:
         return self.messages[-1].payload
-      return None
+      return ""
 
     def draw_messages(self):
       for _message in self.messages:
