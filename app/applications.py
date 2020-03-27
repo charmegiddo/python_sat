@@ -9,7 +9,7 @@ class C_TestAdeviceExternalApplication(P_BaseApplication):
     # class information
     _id = 1
     _type = "Normal"
-    _name = "Test1 Application"
+    _name = "TestA Application"
     _priority = 0
     _dbg_level = DBG_LEVEL_NOTICE 
     super().__init__(_id, _name, _type, _priority, _dbg_level)
@@ -18,6 +18,7 @@ class C_TestAdeviceExternalApplication(P_BaseApplication):
     port = C_ExternalPort(100, 0, "UART_A", '/dev/ttyS0', 115200, 0.5)
     C_ExternalPortLists.get_instance().register(port)
     C_ExternalPortLists.get_instance().establish_session()
+    self.subscribes.register_subscription_id(1) 
 
   def fixed_update(self):
     # confirm message
@@ -25,14 +26,37 @@ class C_TestAdeviceExternalApplication(P_BaseApplication):
     self.subscribes.clear_messages() 
 
   def late_update(self):
-    # todo: subscribes.add(XX)
-    mes = C_Message("This message that id is number 1, send from Test1 Application", 1, 1, -1) # internal
-    #C_MessagePost.get_instance().add_message(mes)
-    mes = C_Message("This message that id is number 2, send from Test1 Application", 2, 1, 100) # external
-    #C_MessagePost.get_instance().add_message(mes)
+    if self.local_count % 10 == 0:
+      # message, message_id, app_id, target device
+      mes = C_Message("This message that id is number 2, send from Test1 Application", 1, 1, 100) # external
+      C_MessagePost.get_instance().add_message(mes)
 
+class C_TestBdeviceExternalApplication(P_BaseApplication):
+  def __init__(self):
+    # class information
+    _id = 1
+    _type = "Normal"
+    _name = "TestB Application"
+    _priority = 0
+    _dbg_level = DBG_LEVEL_NOTICE 
+    super().__init__(_id, _name, _type, _priority, _dbg_level)
 
+  def initialization(self):
+    port = C_ExternalPort(100, 0, "UART_A", '/dev/ttyS0', 115200, 0.5)
+    C_ExternalPortLists.get_instance().register(port)
+    C_ExternalPortLists.get_instance().establish_session()
+    self.subscribes.register_subscription_id(1) 
 
+  def fixed_update(self):
+    # confirm message
+    self.subscribes.draw_messages()
+    self.subscribes.clear_messages() 
+
+  #def late_update(self):
+  #  if self.local_count % 10 == 0:
+  #    # message, message_id, app_id, target device
+  #    mes = C_Message("This message that id is number 2, send from Test1 Application", 1, 1, 100) # external
+  #    C_MessagePost.get_instance().add_message(mes)
 
 
 class C_Test1Application(P_BaseApplication):
