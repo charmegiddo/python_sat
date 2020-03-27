@@ -145,6 +145,9 @@ class C_MessagePost():
         if self.end_charcter.encode('UTF-8') not in recieve_message[-1]:
           sess[i].recieve_temp_message = self.start_charcter.encode('UTF-8') + recieve_message[-1]
           recieve_message = recieve_message[:-1] # eliminate end data
+        else:
+          # all data done
+          sess[i].recieve_temp_message = b''
 
         for _message in recieve_message: 
           parse = sess[i].recieve_temp_message.strip(self.end_charcter.encode('UTF-8'))
