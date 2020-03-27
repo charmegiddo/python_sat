@@ -150,8 +150,7 @@ class C_MessagePost():
           sess[i].recieve_temp_message = b''
 
         for _message in recieve_message: 
-          parse = sess[i].recieve_temp_message.strip(self.end_charcter.encode('UTF-8'))
-          parse = parse.strip(self.start_charcter.encode('UTF-8'))
+          parse = _message.strip(self.end_charcter.encode('UTF-8'))
           msg = pickle.loads(parse)
           self.internal_messages.append(msg) # save internal messages
           print('INFO recieve external message: {}, {}'.format(sess[i].session, msg))
