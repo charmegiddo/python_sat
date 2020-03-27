@@ -176,7 +176,12 @@ class C_Subscribes():
           print("Error: subscription id is existence")
           return
       self.subscription_list.append(_id)
-    
+
+    def get_latest_message_payload(self):
+      if len(self.messages) != 0:
+        return self.messages[-1].payload
+      return None
+
     def draw_messages(self):
       for _message in self.messages:
         print('My message: time [{} [sec]], id [{}], payload [{}]'.format(_message.time_stamp, _message.message_id, _message.payload))

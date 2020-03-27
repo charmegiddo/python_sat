@@ -28,7 +28,11 @@ class C_TestAdeviceExternalApplication(P_BaseApplication):
   def late_update(self):
     if self.local_count % 10 == 0:
       # message, message_id, app_id, target device
-      mes = C_Message("This message that id is number 2, send from Test1 Application", 1, 1, 100) # external
+      mes = C_Message("Hello from A device", 1, 1, 100) # external
+      C_MessagePost.get_instance().add_message(mes)
+
+    if self.local_count % 30 == 0:
+      mes = C_Message("Please reponse", 1, 1, 100)
       C_MessagePost.get_instance().add_message(mes)
 
 class C_TestBdeviceExternalApplication(P_BaseApplication):
@@ -42,7 +46,7 @@ class C_TestBdeviceExternalApplication(P_BaseApplication):
     super().__init__(_id, _name, _type, _priority, _dbg_level)
 
   def initialization(self):
-    port = C_ExternalPort(100, 0, "UART_A", '/dev/ttyS0', 115200, 0.5)
+    port = C_ExternalPort(101, 0, "UART_A", '/dev/ttyS0', 115200, 0.5)
     C_ExternalPortLists.get_instance().register(port)
     C_ExternalPortLists.get_instance().establish_session()
     self.subscribes.register_subscription_id(1) 
@@ -50,13 +54,16 @@ class C_TestBdeviceExternalApplication(P_BaseApplication):
   def fixed_update(self):
     # confirm message
     self.subscribes.draw_messages()
+    if "response" in self.subscribes.get_latest_message_payload:
+      mes = C_Message("Respond from B device", 1, 1, 101) # external
+      C_MessagePost.get_instance().add_message(mes)
     self.subscribes.clear_messages() 
 
-  #def late_update(self):
-  #  if self.local_count % 10 == 0:
-  #    # message, message_id, app_id, target device
-  #    mes = C_Message("This message that id is number 2, send from Test1 Application", 1, 1, 100) # external
-  #    C_MessagePost.get_instance().add_message(mes)
+  def late_update(self):
+    if self.local_count % 10 == 0:
+      # message, message_id, app_id, target device
+      mes = C_Message("Hello from B device", 1, 1, 101) # external
+      C_MessagePost.get_instance().add_message(mes)
 
 
 class C_Test1Application(P_BaseApplication):
