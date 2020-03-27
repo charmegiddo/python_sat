@@ -85,6 +85,10 @@ class C_ApplicationManager():
     ###############################################
     ### subscription 
     ###############################################
+    def recieve_external_post(self):
+      C_MessagePost.get_instance().recieve_external_post()
+      return
+
     def fetch_subscription(self):
       all_messages = C_MessagePost.get_instance().get_messages()
       for _app in self.invoke_list:
@@ -94,6 +98,9 @@ class C_ApplicationManager():
       C_MessagePost.get_instance().clear_messages()
       return
 
+    def transfer_external_post(self):
+      C_MessagePost.get_instance().transfer_external_post()
+      return
     ###############################################
     ### update 
     ###############################################
@@ -124,10 +131,15 @@ def run(_application_list=[]):
   while True:
     # time
     local_start_time = time.time()
-    # subscription
+    # subscription recieve
+    application_manager.recieve_external_post()
+    # subscription fetch
     application_manager.fetch_subscription()
     # update
     application_manager.update()
+    # subscription sends
+    application_manager.transfer_external_post()
+
     # wait
     local_time = time.time() - local_start_time
     wait_time = THROUGHOUT_PUT_TIME - local_time

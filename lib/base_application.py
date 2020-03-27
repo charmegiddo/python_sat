@@ -5,7 +5,8 @@ class P_BaseApplication():
     ###############################################
     ### constructor
     ###############################################
-    def __init__(self, _name=None, _type=None, _priority=None, _dbg_level=1):
+    def __init__(self, _id=None, _name=None, _type=None, _priority=None, _dbg_level=1):
+        self.app_id = _id 
         self.class_name = _name 
         self.type = _type
         self.priority = _priority

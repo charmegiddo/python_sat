@@ -1,8 +1,39 @@
 from lib.base_application import P_BaseApplication
 from lib.application_manager import C_ApplicationManager, run
-from lib.subscribes import C_Message, C_Subscribes, C_MessagePost
+from lib.subscribes import C_Message, C_Subscribes, C_MessagePost, C_ExternalPort, C_ExternalPortLists
 from lib.utils import *
 import numpy as np
+
+class C_TestAdeviceExternalApplication(P_BaseApplication):
+  def __init__(self):
+    # class information
+    _id = 1
+    _type = "Normal"
+    _name = "Test1 Application"
+    _priority = 0
+    _dbg_level = DBG_LEVEL_NOTICE 
+    super().__init__(_id, _name, _type, _priority, _dbg_level)
+
+  def initialization(self):
+    port = C_ExternalPort(100, 0, "UART_A", '/dev/ttyS0', 115200, 0.5)
+    C_ExternalPortLists.get_instance().register(port)
+    C_ExternalPortLists.get_instance().establish_session()
+
+  def fixed_update(self):
+    # confirm message
+    self.subscribes.draw_messages()
+    self.subscribes.clear_messages() 
+
+  def late_update(self):
+    # todo: subscribes.add(XX)
+    mes = C_Message("This message that id is number 1, send from Test1 Application", 1, 1, -1) # internal
+    #C_MessagePost.get_instance().add_message(mes)
+    mes = C_Message("This message that id is number 2, send from Test1 Application", 2, 1, 100) # external
+    #C_MessagePost.get_instance().add_message(mes)
+
+
+
+
 
 class C_Test1Application(P_BaseApplication):
   def __init__(self):
@@ -24,14 +55,16 @@ class C_Test1Application(P_BaseApplication):
     mes = C_Message("This message that id is number 2, send from Test1 Application", 2, 0, 0)
     C_MessagePost.get_instance().add_message(mes)
 
+
 class C_Test2Application(P_BaseApplication):
   def __init__(self):
     # class information
+    _id = 2
     _type = "Normal"
     _name = "Test2 Application"
     _priority = 1
     _dbg_level = DBG_LEVEL_NOTICE 
-    super().__init__(_name, _type, _priority, _dbg_level)
+    super().__init__(_id, _name, _type, _priority, _dbg_level)
   
   def initialization(self):
     # draw application list
@@ -62,11 +95,12 @@ class C_Test2Application(P_BaseApplication):
 class C_Test3Application(P_BaseApplication):
   def __init__(self):
     # class information
+    _id = 3
     _type = "Normal"
     _name = "Test3 Application"
     _priority = 3
     _dbg_level = DBG_LEVEL_NOTICE 
-    super().__init__(_name, _type, _priority, _dbg_level)
+    super().__init__(_id, _name, _type, _priority, _dbg_level)
   
   
   def fixed_update(self):
